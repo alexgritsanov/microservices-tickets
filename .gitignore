@@ -7,3 +7,6 @@ requests.http
 smth
 
 smth/*
+
+client/.next
+client/.swc
