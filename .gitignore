@@ -12,3 +12,4 @@ client/.next
 client/.swc
 
 terd
+nats-test/node_modules
