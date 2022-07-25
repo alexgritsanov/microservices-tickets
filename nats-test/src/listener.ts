@@ -1,5 +1,6 @@
-import nats, { Message } from 'node-nats-streaming';
+import nats, { Message, Stan } from 'node-nats-streaming';
 import { randomBytes } from 'crypto'
+import { TicketCreatedListener } from './events/ticket-created-listener';
 
 console.clear()
 
@@ -15,27 +16,32 @@ stan.on('connect', () => {
         process.exit();
     })
 
-    const options = stan.subscriptionOptions()
-        .setManualAckMode(true)
-        .setDeliverAllAvailable()
-        .setDurableName('accounting-service')
+    new TicketCreatedListener(stan).listen()
+
+    // const options = stan.subscriptionOptions()
+    //     .setManualAckMode(true)
+    //     .setDeliverAllAvailable()
+    //     .setDurableName('accounting-service')
 
 
-    const subscription = stan.subscribe('ticket:created',
-        //  "orders-service-queue-group",
-        "queue-group-name",
-        options)
+    // const subscription = stan.subscribe('ticket:created',
+    //     //  "orders-service-queue-group",
+    //     "queue-group-name",
+    //     options)
 
-    subscription.on('message', (msg: Message) => {
-        const data = msg.getData()
+    // subscription.on('message', (msg: Message) => {
+    //     const data = msg.getData()
 
-        if (typeof data === 'string') {
-            console.log(`Recieved event #${msg.getSequence()}, with data ${data}`)
-        }
+    //     if (typeof data === 'string') {
+    //         console.log(`Recieved event #${msg.getSequence()}, with data ${data}`)
+    //     }
 
-        msg.ack()
-    })
+    //     msg.ack()
+    // })
 })
 
 process.on("SIGINT", () => stan.close())
 process.on("SIGTERM", () => stan.close())
+
+
+
