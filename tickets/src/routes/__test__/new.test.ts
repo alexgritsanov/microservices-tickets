@@ -1,6 +1,7 @@
 import request from 'supertest'
-import { Ticket } from '../../../models/ticket'
+
 import { app } from '../../app'
+import { Ticket } from '../../models/ticket'
 import { natsWrapper } from '../../nats-wrapper'
 
 
@@ -112,5 +113,5 @@ it('publishes an event', async () => {
         })
         .expect(201)
 
-    console.log(natsWrapper)
+    expect(natsWrapper.client.publish).toHaveBeenCalled()
 })
