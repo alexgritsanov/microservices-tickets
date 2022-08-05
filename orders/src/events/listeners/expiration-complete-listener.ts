@@ -1,3 +1,4 @@
+
 import { ExpirationCompleteEvent, Listener, OrderStatus, Subjects } from "@algreetickets/common";
 import { Message } from "node-nats-streaming";
 import { Order } from "../../models/order";
@@ -17,6 +18,9 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
             throw new Error('Order not found')
         }
 
+        if (order.status === OrderStatus.Complete) {
+            return msg.ack()
+        }
         order.set({
             status: OrderStatus.Cancelled,
 
